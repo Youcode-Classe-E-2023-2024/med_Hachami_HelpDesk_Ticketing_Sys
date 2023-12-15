@@ -2,6 +2,10 @@
   // Load Config
   require_once 'config/config.php';
 
+  
+  require_once 'middleware/AuthMiddleware.php';
+  require_once 'models/JwtAuth.php';
+
   require_once '../vendor/autoload.php';
  
 
