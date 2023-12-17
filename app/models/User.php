@@ -24,6 +24,11 @@ Class User{
         return ($row) ? true : false;
     }
 
+    public function getAllUsers(){
+      $this->db->query('SELECT * FROM user');
+      return $this->db->resultSet();
+    }
+
     public function login($email, $password){
         $this->db->query('SELECT * FROM user WHERE email = :email ');
         $this->db->bind(':email', $email);
