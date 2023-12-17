@@ -4,8 +4,8 @@ class AuthMiddleware
 {
     public static function authenticate()
     {
-        $headers = apache_request_headers();
-        $token = isset($headers['Authorization']) ? $headers['Authorization'] : null;
+            $headers = apache_request_headers();
+            $token = isset($headers['Authorization']) ? $headers['Authorization'] : null;
 
         if (!$token) {
             http_response_code(401);
