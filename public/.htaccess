@@ -1,8 +1,14 @@
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "POST, GET, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+</IfModule>
+
 <IfModule mod_rewrite.c>
-  Options -Multiviews
-  RewriteEngine On
-  RewriteBase /med_Hachami_HelpDesk_Ticketing_Sys/public
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteRule  ^(.+)$ index.php?url=$1 [QSA,L]
+    Options -Multiviews
+    RewriteEngine On
+    RewriteBase /med_Hachami_HelpDesk_Ticketing_Sys/public
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]
 </IfModule>
