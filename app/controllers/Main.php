@@ -5,12 +5,14 @@ Class Main extends Controller{
     private $priotityModel;
     private $statusModel;
     private $tagModel;
+    private $ticketModel;
 
     public function __construct(){
        
         $this->priotityModel = $this->model('Priority');
         $this->statusModel = $this->model('Status');
         $this->tagModel = $this->model('Tag');
+        $this->ticketModel = $this->model('Ticket');
     }
     public function index(){
         return;
@@ -37,6 +39,32 @@ Class Main extends Controller{
         $tags = $this->tagModel->getAllTags();
         echo json_encode($tags);
 
+    }
+
+    public function newTicket(){
+        AuthMiddleware::authenticate();
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $postData = file_get_contents("php://input");
+            $data = json_decode($postData, true);
+            if ($data !== null && !empty($data['title']) && !empty($data['description'])
+                 && !empty($data['priority']) && !empty($data['tag']) && !empty($data['creatordId']) && !empty($data['assignedTo']) 
+                ) {
+                    $addedTicket =$this->ticketModel->addTicket($data);
+                    if($addedTicket){
+                        echo json_encode(['message' => 'Ticket Added Succe']);
+                    }
+                    else{
+                        echo json_encode(['error' => 'Addition Failed']);
+                    } 
+                
+            }
+            else {
+               
+                http_response_code(400); 
+                echo json_encode(['error' => 'Invalid JSON payload']);
+            }
+        }
+       
     }
 
 
