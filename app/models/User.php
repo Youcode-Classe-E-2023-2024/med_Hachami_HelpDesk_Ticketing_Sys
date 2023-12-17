@@ -25,7 +25,7 @@ Class User{
     }
 
     public function getAllUsers(){
-      $this->db->query('SELECT * FROM user');
+      $this->db->query('SELECT id , full_name , email , imgUrl FROM user');
       return $this->db->resultSet();
     }
 
