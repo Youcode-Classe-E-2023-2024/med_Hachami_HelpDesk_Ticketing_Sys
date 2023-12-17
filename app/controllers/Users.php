@@ -77,4 +77,12 @@ Class Users extends Controller{
         }
         
     }
+
+    public function allUsers(){
+        AuthMiddleware::authenticate();
+        $users =  $this->userModel->getAllUsers();
+        echo json_encode($users);
+    }
+
+
 }
