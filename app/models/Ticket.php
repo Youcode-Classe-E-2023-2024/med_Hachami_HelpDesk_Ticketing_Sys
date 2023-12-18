@@ -128,4 +128,15 @@ Class Ticket{
         $this->db->bind(':tickedId' , $ticketId);
         return $this->db->resultSet();
     }
+
+    public function getIncompleteTicket($userId){
+        $this->db->query("SELECT ticket.id FROM 
+        `ticketassignment` , user , ticket
+        WHERE ticketassignment.ticketId = ticket.id
+        AND user.id = ticketassignment.userId
+        AND ticket.status <>4 AND user.id = :userId");
+        $this->db->bind(':userId', $userId);
+        $this->db->execute();
+        return $this->db->rowCount();
+    }
 }
