@@ -47,7 +47,7 @@ Class Main extends Controller{
             $postData = file_get_contents("php://input");
             $data = json_decode($postData, true);
             if ($data !== null && !empty($data['title']) && !empty($data['description'])
-                 && !empty($data['priority']) && !empty($data['tag']) && !empty($data['creatordId']) && !empty($data['assignedTo']) 
+                 && !empty($data['priority'])  && !empty($data['creatordId']) && !empty($data['assignedTo']) && !empty($data['tags']) 
                 ) {
                     $addedTicket =$this->ticketModel->addTicket($data);
                     if($addedTicket){
@@ -66,6 +66,26 @@ Class Main extends Controller{
         }
        
     }
+
+    public function allTickets() {
+        AuthMiddleware::authenticate();
+        $ticketDetails = $this->ticketModel->getAllTickets();
+        
+       
+        echo json_encode($ticketDetails);
+
+    }
+
+    public function ticketAssigned($userdId) {
+        AuthMiddleware::authenticate();
+        $ticketDetails = $this->ticketModel->getTicketAssignedTo($userdId);
+        
+       
+        echo json_encode($ticketDetails);
+
+    }
+
+   
 
 
 }
