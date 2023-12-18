@@ -84,6 +84,11 @@ Class Main extends Controller{
         echo json_encode($ticketDetails);
 
     }
+    public function incompleteTicket($userdId){
+        AuthMiddleware::authenticate();
+        $numIncoTicket = $this->ticketModel->getIncompleteTicket($userdId);
+        echo json_encode($numIncoTicket);
+    }
 
    
 
