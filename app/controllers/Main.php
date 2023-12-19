@@ -90,7 +90,13 @@ Class Main extends Controller{
         echo json_encode($numIncoTicket);
     }
 
-   
+    public function myTicket($userdId){
+        AuthMiddleware::authenticate();
+        $ticketsDetails = $this->ticketModel->getMyTickets($userdId);
+        echo json_encode($ticketsDetails);
+    }
 
+   
+    
 
 }
