@@ -183,5 +183,86 @@ Class Ticket{
         return $this->db->resultSet();
     }
 
-   
+   public function editStatus($statusId,$ticketId , $userId){
+        $this->db->query("SELECT id FROM ticket WHERE creatordId = :userId AND id = :ticketId");
+        $this->db->bind(':userId' , $userId);
+        $this->db->bind(':ticketId' , $ticketId);
+        $this->db->execute();
+        if($this->db->rowCount()){
+            $this->db->query("UPDATE ticket SET status = :status WHERE id = :ticketId");
+            $this->db->bind(':status',$statusId);
+            $this->db->bind(':ticketId' , $ticketId);
+            return $this->db->execute();
+        }else{
+            return false;
+        }
+    
+   }
+
+   public function delete($ticketId,$userId){
+        $this->db->query("SELECT id FROM ticket WHERE creatordId = :userId AND id = :ticketId");
+        $this->db->bind(':userId' , $userId);
+        $this->db->bind(':ticketId' , $ticketId);
+        $this->db->execute();
+        if($this->db->rowCount()){
+            $this->db->query("DELETE FROM  ticket WHERE id = :ticketId");
+            $this->db->bind(':ticketId' , $ticketId);
+            return $this->db->execute();
+        }else{
+            return false;
+        }
+   }
+
+   public function getTicketById($ticketId){
+    $this->db->query("
+    SELECT
+    DISTINCT ticket.id as tickeId,
+    ticket.title as ticketTitle,
+    ticket.description as ticketDesc,
+    ticket.createdAt as ticketCreatedAt,
+    user.id as creatordId,
+    user.full_name as creatorName,
+    user.imgUrl as creatorImg,
+    priority.Name as priority,
+    status.Name as status,
+    GROUP_CONCAT(DISTINCT tags.Name) as tags,
+    (
+        SELECT GROUP_CONCAT( assignedUser.imgUrl)
+        FROM ticketassignment
+        LEFT JOIN user as assignedUser ON ticketassignment.userId = assignedUser.id
+        WHERE ticketassignment.ticketId = ticket.id 
+    ) as assignedUserImg
+    FROM
+        ticket
+    JOIN priority ON ticket.priority = priority.id
+    JOIN status ON ticket.status = status.id
+    INNER JOIN ticketassignment ON ticket.id = ticketassignment.ticketId
+    INNER JOIN user ON ticket.creatordId = user.id
+    INNER JOIN ticket_tag ON ticket.id = ticket_tag.ticket_id
+    INNER JOIN tags ON ticket_tag.tag_id = tags.id
+    AND ticket.id=:tickeId
+    GROUP BY
+        tickeId,
+        ticketTitle,
+        ticketDesc,
+        ticketCreatedAt,
+        userId,
+        creatorName,
+        priority,
+        status;
+        
+        ");
+        $this->db->bind(':tickeId',$ticketId);
+        return $this->db->resultSet();
+    }
+
+    public function insertIntoComment($ticketId , $userId , $comment){
+        $this->db->query("
+            INSERT INTO comment(text, createdBy , ticketId) VALUES(:text, :createdBy, :ticketId)
+        ");
+        $this->db->bind(':text',$comment);
+        $this->db->bind(':createdBy' , $userId);
+        $this->db->bind(':ticketId',$ticketId);
+        return $this->db->execute();
+    }
 }
