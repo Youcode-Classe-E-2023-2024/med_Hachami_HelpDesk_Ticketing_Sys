@@ -139,4 +139,49 @@ Class Ticket{
         $this->db->execute();
         return $this->db->rowCount();
     }
+
+    public function getMyTickets($userId){
+        $this->db->query("
+        SELECT
+        DISTINCT ticket.id as tickeId,
+        ticket.title as ticketTitle,
+        ticket.description as ticketDesc,
+        ticket.createdAt as ticketCreatedAt,
+        user.id as creatordId,
+        user.full_name as creatorName,
+        user.imgUrl as creatorImg,
+        priority.Name as priority,
+        status.Name as status,
+        GROUP_CONCAT(DISTINCT tags.Name) as tags,
+        (
+            SELECT GROUP_CONCAT( assignedUser.imgUrl)
+            FROM ticketassignment
+            LEFT JOIN user as assignedUser ON ticketassignment.userId = assignedUser.id
+            WHERE ticketassignment.ticketId = ticket.id 
+        ) as assignedUserImg
+    FROM
+        ticket
+    JOIN priority ON ticket.priority = priority.id
+    JOIN status ON ticket.status = status.id
+    INNER JOIN ticketassignment ON ticket.id = ticketassignment.ticketId
+    INNER JOIN user ON ticket.creatordId = user.id
+    INNER JOIN ticket_tag ON ticket.id = ticket_tag.ticket_id
+    INNER JOIN tags ON ticket_tag.tag_id = tags.id
+    AND creatordId=:userId
+    GROUP BY
+        tickeId,
+        ticketTitle,
+        ticketDesc,
+        ticketCreatedAt,
+        userId,
+        creatorName,
+        priority,
+        status;
+        
+        ");
+        $this->db->bind(':userId',$userId);
+        return $this->db->resultSet();
+    }
+
+   
 }
