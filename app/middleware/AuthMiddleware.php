@@ -13,16 +13,14 @@ class AuthMiddleware
         }
 
         $decoded = JwtAuth::decodeToken($token);
+        
 
         if (!$decoded) {
             http_response_code(401);
             exit(json_encode(['message' => 'Invalid token']));
         }
 
-        // Store user information for later use
-        // self::setUser($decoded);
-
-        // Continue with the execution
+        return $decoded;
     }
 
    
