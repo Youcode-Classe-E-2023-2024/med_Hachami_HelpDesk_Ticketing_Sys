@@ -162,6 +162,11 @@ Class Main extends Controller{
         
     }
 
+    public function comments($ticketId){
+        // $decodeToken = AuthMiddleware::authenticate();
+        $comments = $this->ticketModel->getCommentByTicketId($ticketId);
+        echo json_encode($comments);
+    }
    
     
 
