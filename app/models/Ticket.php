@@ -265,4 +265,16 @@ Class Ticket{
         $this->db->bind(':ticketId',$ticketId);
         return $this->db->execute();
     }
+
+    public function getCommentByTicketId($ticketId){
+        $this->db->query("
+        SELECT  comment.text , user.full_name , user.imgUrl 
+        FROM comment , user 
+        WHERE comment.createdBy = user.id AND comment.ticketId =:ticketId
+        ORDER BY comment.createdAt DESC
+        ;
+        ");
+        $this->db->bind(':ticketId',$ticketId);
+        return $this->db->resultSet();
+    }
 }
